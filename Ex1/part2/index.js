@@ -21,9 +21,12 @@ app
   })
   .post((req, res) => {
     const { coor1, coor2 } = req.body;
-    if (!(coor1 && coor2)) return res.status(400).send({ distance: null, status: 'INVALID_SYNTAX' });
-    const lat1 = coor1.lat, lon1 = coor1.lon;
-    const lat2 = coor2.lat, lon2 = coor2.lon;
+    if (!(coor1 && coor2))
+      return res.status(400).send({ distance: null, status: 'INVALID_SYNTAX' });
+    const lat1 = coor1.lat,
+      lon1 = coor1.lon;
+    const lat2 = coor2.lat,
+      lon2 = coor2.lon;
     if (!(lat1 && lon1 && lat2 && lon2))
       return res.status(400).send({ distance: null, status: 'INVALID_VALUE' });
     const distance = Utils.getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2);
