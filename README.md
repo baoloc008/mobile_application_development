@@ -1,2 +1,2 @@
 # mobile_application_development
-Homework
+Exercises for Mobile Application Development course
