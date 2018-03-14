@@ -1,12 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const Utils = require('./Utils');
 const app = express();
 
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-app.get('/', (req, res) => res.send('welcome'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', (req, res) => res.send('index.html'));
 app
   .route('/api/distance')
   .get((req, res) => {
