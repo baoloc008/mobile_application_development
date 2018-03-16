@@ -57,3 +57,5 @@ http://localhost:3000
 
 * Enter two coordinator
 * Click `Get distance` button
+
+## Deployed server: [https://distance-cal.herokuapp.com/](https://distance-cal.herokuapp.com/ "Distance")
