@@ -59,6 +59,8 @@
   <script>
     $(document).ready(() => {
       $('#btnOK').click(() => {
+        $('#btnOK').prop('disabled', true);
+        $('#result').html('Please wait...');
         const lat1 = $('#latitude1').val();
         const lon1 = $('#longitude1').val();
         const lat2 = $('#latitude2').val();
@@ -69,10 +71,14 @@
         $.get(url, res => {
             if (res.status === 'OK') distance = res.distance;
           })
-          .done(() => $('#result').html(`Distance: ${distance}`))
-          .fail(err =>
-            $('#result').html(`Error: ${err}`)
-          );
+          .done(() => {
+            $('#result').html(`Distance: ${distance}`);
+            $('#btnOK').prop('disabled', false);
+          })
+          .fail(err => {
+            $('#result').html(`Error: ${err}`);
+            $('#btnOK').prop('disabled', false);
+          });
       });
     });
   </script>
