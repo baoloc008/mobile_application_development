@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Currency Converter</string>
+    <string name="api_key">0f43fc8b687848529f6527a4bb53b67b</string>
 </resources>
