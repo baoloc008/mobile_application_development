@@ -1,15 +1,21 @@
 package bk.loc.currencyconverter;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -22,19 +28,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText edtYourMoney;
+    private EditText edtYourMoney, edtResult;
     private Spinner spinnerTo, spinnerFrom;
-    private Button btnClear, btnConvert;
-    private TextView tvResult;
+    private Button btnClear, btnConvert, btnRefresh;
     private DataClient dataClient;
     private String currency[] = {"AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND","BOB","BRL","BSD","BTC","BTN","BWP","BYN","BZD","CAD","CDF","CHF","CLF","CLP","CNH","CNY","COP","CRC","CUC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GEL","GGP","GHS","GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","IMP","INR","IQD","IRR","ISK","JEP","JMD","JOD","JPY","KES","KGS","KHR","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD","MDL","MGA","MKD","MMK","MNT","MOP","MRO","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SLL","SOS","SRD","SSP","STD","STN","SVC","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX","USD","UYU","UZS","VEF","VND","VUV","WST","XAF","XAG","XAU","XCD","XDR","XOF","XPD","XPF","XPT","YER","ZAR","ZMW","ZWL"};
     private ProgressDialog mDialog;
+    private Rates rates;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("loglog", "start");
         mapComponent();
+        edtResult.setKeyListener(null);
+        btnConvert.setEnabled(false);
         mDialog = new ProgressDialog(this, R.style.MyAlertDialogStyle);
         mDialog.setMessage("Fetching data...");
         mDialog.setCancelable(false);
@@ -50,45 +58,71 @@ public class MainActivity extends AppCompatActivity {
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideSoftKeyboard(MainActivity.this, view);
+                edtYourMoney.setText("");
+                spinnerFrom.setSelection(0);
+                spinnerTo.setSelection(0);
+                edtResult.setText("");
+            }
+        });
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 mDialog.show();
+                getCurrency();
             }
         });
         btnConvert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDialog.dismiss();
+                hideSoftKeyboard(MainActivity.this, view);
+                Double money = Double.valueOf(edtYourMoney.getText().toString());
+                String from = spinnerFrom.getSelectedItem().toString();
+                String to = spinnerTo.getSelectedItem().toString();
+                Double rateFrom, rateTo;
+                try {
+                    rateFrom = (Double) rates.getClass().getMethod("get" + from).invoke(rates);
+                    rateTo = (Double)rates.getClass().getMethod("get" + to).invoke(rates);
+                    edtResult.setText(String.valueOf(money / rateFrom * rateTo));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        edtYourMoney.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 0) btnConvert.setEnabled(false);
+                else if (charSequence.length() > 0) btnConvert.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
     private void getCurrency() {
         dataClient.getCurrency().enqueue(new Callback<Currency>() {
             @Override
-            public void onResponse(Call<Currency> call, Response<Currency> response) {
+            public void onResponse(@NonNull Call<Currency> call, @NonNull Response<Currency> response) {
                 if (response.isSuccessful()) {
                     mDialog.dismiss();
-                    Rates rates = response.body().getRates();
-                    Double m = null;
-                    try {
-                        m = (Double) rates.getClass().getMethod("get" + "VND").invoke(rates);
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d("loglog", m.toString());
-
-
-
-                }else {
-                    Log.d("loglog", "loi 1");
+                    rates = response.body().getRates();
                 }
             }
-
             @Override
-            public void onFailure(Call<Currency> call, Throwable t) {
-                Log.d("loglog", "loi 2");
+            public void onFailure(@NonNull Call<Currency> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, "There is an error occurred", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -98,17 +132,12 @@ public class MainActivity extends AppCompatActivity {
         spinnerFrom = findViewById(R.id.spinnerFrom);
         btnClear = findViewById(R.id.btnClear);
         btnConvert = findViewById(R.id.btnConvert);
-        tvResult = findViewById(R.id.tvResult);
+        edtResult = findViewById(R.id.edtResult);
+        btnRefresh = findViewById(R.id.btnRefresh);
     }
-//    private class MyProcessEvent implements AdapterView.OnItemSelectedListener {
-//        //Khi có chọn lựa thì vào hàm này
-//        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//            //arg2 là phần tử được chọn trong data source
-//            selection.setText(arr[arg2]);
-//        }
-//        //Nếu không chọn gì cả
-//        public void onNothingSelected(AdapterView<?> arg0) {
-//            selection.setText("");
-//        }
-//    }
+    private void hideSoftKeyboard (Activity activity, View view) {
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert imm != null;
+        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+    }
 }

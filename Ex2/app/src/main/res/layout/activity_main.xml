@@ -6,52 +6,99 @@
     android:layout_height="match_parent"
     tools:context="bk.loc.currencyconverter.MainActivity"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="15dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="10">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
+            android:textColor="@color/secondaryText"
+            android:textSize="15sp"
             android:text="Money"/>
         <EditText
             android:id="@+id/edtYourMoney"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="8"
             android:layout_height="wrap_content"
-            android:text="Enter your monney"/>
+            android:textColor="@color/primaryText"
+            android:inputType="numberDecimal"
+            android:hint="0"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="10">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
+            android:textColor="@color/secondaryText"
+            android:textSize="15sp"
             android:text="From"/>
         <Spinner
             android:id="@+id/spinnerFrom"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="8"
             android:layout_height="wrap_content">
         </Spinner>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="10">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
+            android:textColor="@color/secondaryText"
+            android:textSize="15sp"
             android:text="To"/>
         <Spinner
             android:id="@+id/spinnerTo"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="8"
             android:layout_height="wrap_content">
         </Spinner>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="10">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryText"
+            android:textSize="15sp"
+            android:text="Result"/>
+        <EditText
+            android:id="@+id/edtResult"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryText"
+            android:hint="0"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="9">
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="Refresh"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="#FFFFFF"/>
         <Button
             android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
             android:text="Clear"
             android:backgroundTint="@color/colorPrimary"
@@ -59,17 +106,13 @@
             />
         <Button
             android:id="@+id/btnConvert"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
             android:text="Convert"
             android:backgroundTint="@color/colorPrimary"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
-    <TextView
-        android:id="@+id/tvResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Result"/>
     <ProgressBar
         android:id="@+id/progress_horizontal"
         android:indeterminateOnly="false"
