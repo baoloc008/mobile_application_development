@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import bk.loc.currencyconverter.models.Currency;
 import bk.loc.currencyconverter.models.Rates;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private class OnClickFresh implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            mDialog.show();
+            showDialog();
             getCurrency();
         }
     }
@@ -110,11 +112,22 @@ public class MainActivity extends AppCompatActivity {
         mDialog = new ProgressDialog(this, R.style.MyAlertDialogStyle);
         mDialog.setMessage("Fetching data...");
         mDialog.setCancelable(false);
-        mDialog.show();
+        showDialog();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currency);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         spinnerFrom.setAdapter(arrayAdapter);
         spinnerTo.setAdapter(arrayAdapter);
+    }
+    private void showDialog() {
+        mDialog.show();
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+              mDialog.dismiss();
+              timer.cancel();
+            }
+        }, 5000);
     }
     private void getCurrency() {
         dataClient.getCurrency().enqueue(new Callback<Currency>() {
