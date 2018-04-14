@@ -11,4 +11,12 @@
 
 * Click `REFRESH` to get rate from api again.
 * Click `CLEAR` to reset fields.
-* Click `Convert` to convert money.
+* Click `CONVERT` to convert money.
+
+## Screenshot
+
+![fetching-data](https://raw.githubusercontent.com/baoloc008/mobile_application_development/master/Ex2/sreenshots/fetching-data.jpg)
+![input-money](https://raw.githubusercontent.com/baoloc008/mobile_application_development/master/Ex2/sreenshots/input-money.jpg)
+![select-money](https://raw.githubusercontent.com/baoloc008/mobile_application_development/master/Ex2/sreenshots/select-money.jpg)
+![convert](https://raw.githubusercontent.com/baoloc008/mobile_application_development/master/Ex2/sreenshots/convert.jpg)
+
